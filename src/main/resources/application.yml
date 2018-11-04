@@ -1,0 +1,17 @@
+spring:
+  activemq:
+    broker-url: vm://embedded?broker.persistent=false,useShutdownHook=false
+    in-memory: true
+    password: admin
+    user: admin
+
+
+queues:
+  first:
+    req: amq.first-queue.req
+    res: amq.first-queue.res
+    err: amq.first-queue.err
+  second:
+    req: amq.second-queue.req
+    res: amq.second-queue.res
+    err: amq.second-queue.err

@@ -1,0 +1,79 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {url 'https://plugins.gradle.org/m2/'}
+    }
+}
+
+plugins {
+    id 'groovy'
+    id 'project-report'
+    id 'org.springframework.boot' version '2.1.0.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.5.RELEASE'
+}
+
+group = 'ru.snm.misc'
+version = '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom SpringBootPlugin.BOM_COORDINATES
+        mavenBom 'org.apache.logging.log4j:log4j:2.11.1'
+        mavenBom 'org.spockframework:spock-bom:1.2-groovy-2.5'
+    }
+}
+
+ext['spring.version'] = '5.1.2.RELEASE'
+
+configurations.all{
+    resolutionStrategy {
+        /* sumthin' fuckin' thin' forces dependencyManagement to use
+         * 3.2.18.RELEASE by default, so i force correct version here */
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.springframework') {
+                details.useVersion project.ext['spring.version']
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation(
+            'org.springframework.boot:spring-boot-starter',
+            'org.springframework.boot:spring-boot-starter-activemq',
+
+            'org.codehaus.groovy:groovy-all:2.5.3',
+
+
+            /* 'com.google.code.gson:gson',
+             * as for Spring:5.1.2 gson converter is not yet supported.
+             * pull request and issue: https://jira.spring.io/browse/SPR-16958 */
+
+            'org.apache.logging.log4j:log4j-core',
+            'org.apache.logging.log4j:log4j-api',
+    )
+
+    testImplementation(
+            'org.springframework.boot:spring-boot-starter-test',
+
+            'org.apache.activemq:activemq-broker:5.15.7',
+
+            'org.spockframework:spock-core',
+            'org.spockframework:spock-spring',
+    )
+
+}
+
+tasks.withType( GroovyCompile ) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += '-proc:none'
+}

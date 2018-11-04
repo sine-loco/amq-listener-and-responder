@@ -1,0 +1,3 @@
+rootProject.name = 'amq-listener-and-responder'
+
+enableFeaturePreview('IMPROVED_POM_SUPPORT')
